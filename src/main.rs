@@ -1,9 +1,6 @@
 use clap::{Parser, Subcommand};
 use dotenv::dotenv;
-use notion_client::{
-    endpoints::Client,
-    NotionClientError,
-};
+use notion_client::{endpoints::Client, NotionClientError};
 use std::env;
 
 #[tokio::main]
@@ -57,7 +54,7 @@ impl Notion {
     pub async fn fetch_block_as_json(&self, block_id: &str) -> Result<String, NotionClientError> {
         let block = self.client.blocks.retrieve_a_block(block_id).await?;
 
-        match serde_json::to_string(&block) {
+        match serde_json::to_string_pretty(&block) {
             Ok(json) => Ok(json),
             Err(e) => Err(NotionClientError::FailedToSerialize {
                 source: serde_json::Error::io(std::io::Error::new(
